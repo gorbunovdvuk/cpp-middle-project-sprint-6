@@ -1,6 +1,6 @@
 #include "queue/priority_queue.hpp"
 
-#include "../../../../.conan2/p/magic2b79a91bc8c6c/p/include/magic_enum/magic_enum.hpp"
+#include <magic_enum/magic_enum.hpp>
 #include "queue/bounded_queue.hpp"
 #include "queue/unbounded_queue.hpp"
 
