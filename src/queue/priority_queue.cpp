@@ -17,8 +17,6 @@ void PriorityQueue::push(TaskPriority priority, Task task) {
 }
 
 std::optional<Task> PriorityQueue::pop() {
-    std::unique_lock lock(mutex_);
-
     for (;;) {
         for (auto &queue : queues_ | std::views::values) {
             if (auto task = queue->try_pop(); task.has_value()) {
@@ -26,6 +24,7 @@ std::optional<Task> PriorityQueue::pop() {
             }
         }
 
+        std::unique_lock lock(mutex_);
         if (shutdown_) {
             return std::nullopt;
         }

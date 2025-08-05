@@ -7,7 +7,7 @@
 
 namespace dispatcher::queue {
 
-class UnboundedQueue : public IQueue {
+class UnboundedQueue final : public IQueue {
 public:
     UnboundedQueue() = default;
 

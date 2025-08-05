@@ -3,7 +3,6 @@
 #include <functional>
 #include <mutex>
 #include <queue>
-#include <semaphore>
 
 namespace dispatcher::queue {
 

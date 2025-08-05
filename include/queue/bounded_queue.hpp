@@ -8,7 +8,7 @@
 
 namespace dispatcher::queue {
 
-class BoundedQueue : public IQueue {
+class BoundedQueue final : public IQueue {
 public:
     explicit BoundedQueue(int capacity): max_capacity_(capacity) {}
 
