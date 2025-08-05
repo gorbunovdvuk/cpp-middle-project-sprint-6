@@ -45,9 +45,11 @@ std::optional<Task> PriorityQueue::pop() {
         not_empty_or_shutdown_.wait(lock);
     }
 }
+
 void PriorityQueue::shutdown() {
     std::unique_lock lock(mutex_);
     shutdown_ = true;
     not_empty_or_shutdown_.notify_all();
 }
+
 } // namespace dispatcher::queue
