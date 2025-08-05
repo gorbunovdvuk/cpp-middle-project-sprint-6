@@ -16,6 +16,7 @@ PriorityQueue::PriorityQueue(const std::map<TaskPriority, QueueOptions>& queues)
         }
     }
 }
+
 void PriorityQueue::push(TaskPriority priority, Task task) {
     std::shared_ptr<IQueue> queue = std::invoke(
         [this](TaskPriority priority) {
@@ -26,6 +27,7 @@ void PriorityQueue::push(TaskPriority priority, Task task) {
     queue->push(std::move(task));
     not_empty_or_shutdown_.notify_one();
 }
+
 std::optional<Task> PriorityQueue::pop() {
     std::unique_lock lock(mutex_);
 

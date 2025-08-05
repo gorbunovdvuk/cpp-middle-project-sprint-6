@@ -16,8 +16,6 @@ RUN useradd -ms /bin/bash dev \
 # Switch to the 'dev' user
 USER dev
 
-RUN ls /root/.config/tree-sitter/config.json
-
 RUN git config --global core.editor code
 
 # Install conan through pipx
