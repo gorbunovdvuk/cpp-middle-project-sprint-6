@@ -1,14 +1,12 @@
 #include "queue/priority_queue.hpp"
 
+#include "../../../../.conan2/p/magic2b79a91bc8c6c/p/include/magic_enum/magic_enum.hpp"
 #include "queue/bounded_queue.hpp"
 #include "queue/unbounded_queue.hpp"
 
 #include <ranges>
 
 namespace dispatcher::queue {
-
-PriorityQueue::PriorityQueue(const std::map<TaskPriority, QueueOptions>& queues): queues_(prepare_queues(queues)) {
-}
 
 void PriorityQueue::push(TaskPriority priority, Task task) {
     std::shared_ptr<IQueue> queue = queues_.at(priority);
@@ -41,9 +39,9 @@ void PriorityQueue::shutdown() {
 
 std::map<TaskPriority, std::shared_ptr<IQueue>> PriorityQueue::prepare_queues(const std::map<TaskPriority, QueueOptions>& queues) {
     std::map<TaskPriority, std::shared_ptr<IQueue>> queues_;
-    for (const auto &[priority, options] : queues) {
-        if (options.bounded) {
-            queues_.emplace(priority, std::make_shared<BoundedQueue>(options.capacity.value()));
+    for (const auto priority : magic_enum::enum_values<TaskPriority>()) {
+        if (const auto [bounded, capacity] = queues.at(priority); bounded) {
+            queues_.emplace(priority, std::make_shared<BoundedQueue>(capacity.value()));
         } else {
             queues_.emplace(priority, std::make_shared<UnboundedQueue>());
         }

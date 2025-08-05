@@ -12,7 +12,8 @@ namespace dispatcher::queue {
 
 class PriorityQueue {
 public:
-    explicit PriorityQueue(const std::map<TaskPriority, QueueOptions>& queues);
+    explicit PriorityQueue(const std::map<TaskPriority, QueueOptions>& queues): queues_(prepare_queues(queues)) {
+    }
 
     void push(TaskPriority priority, Task task);
 

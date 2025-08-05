@@ -4,6 +4,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <queue>
+#include <semaphore>
 
 namespace dispatcher::queue {
 
@@ -17,6 +18,7 @@ public:
 
 private:
     std::queue<Task> queue_;
+    std::counting_semaphore<> size_{0};
     mutable std::mutex mutex_;
 };
 
