@@ -1,10 +1,9 @@
 #include "queue/priority_queue.hpp"
-
-#include <magic_enum/magic_enum.hpp>
 #include "queue/bounded_queue.hpp"
 #include "queue/unbounded_queue.hpp"
 
 #include <ranges>
+#include <magic_enum/magic_enum.hpp>
 
 namespace dispatcher::queue {
 
