@@ -6,6 +6,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <condition_variable>
 
 namespace dispatcher::queue {
 
