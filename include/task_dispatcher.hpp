@@ -6,15 +6,27 @@
 #include "thread_pool/thread_pool.hpp"
 #include "types.hpp"
 
+#include <future>
+
 namespace dispatcher {
 
 class TaskDispatcher {
-    // здесь ваш код
 public:
-    // TaskDispatcher(size_t thread_count, ?);
+    explicit TaskDispatcher(size_t thread_count, std::map<TaskPriority, queue::QueueOptions> config = {});
 
-    void schedule(TaskPriority priority, std::function<void()> task);
-    ~TaskDispatcher();
+    template <typename F, typename... Args>
+    auto schedule(TaskPriority priority, F&& function, Args&&... args) {
+        using return_type = decltype(std::forward<F>(function)(std::forward<Args>(args)...));
+
+        auto task = std::make_shared<std::packaged_task<return_type()>>(std::bind(std::forward<F>(function), std::forward<Args>(args)...));
+        std::future<return_type> result = task->get_future();
+        queue_->push(priority, [task]() { (*task)(); });
+        return result;
+    }
+
+private:
+    std::shared_ptr<queue::PriorityQueue> queue_;
+    thread_pool::ThreadPool thread_pool_;
 };
 
 }  // namespace dispatcher

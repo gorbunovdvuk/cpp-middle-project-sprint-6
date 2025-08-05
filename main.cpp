@@ -17,10 +17,12 @@ int main() {
         threads.emplace_back([&, i]() {
             for (int j = 0; j < 10; j++) {
                 td.schedule(TaskPriority::Normal,
-                            [=]() { Logger::Get().Log("Normal priority message №" + std::to_string(10 * i + j)); });
+                            [](int i, int j) { Logger::Get().Log("Normal priority message №" + std::to_string(10 * i + j)); }, i, j);
                 td.schedule(TaskPriority::High,
-                            [=]() { Logger::Get().Log("High priority message №" + std::to_string(10 * i + j)); });
+                            [](int i, int j) { Logger::Get().Log("High priority message №" + std::to_string(10 * i + j)); }, i, j);
             }
         });
     }
+
+    return 0;
 }
