@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cstdio>
-#include <memory>
+#include <iomanip>
 #include <mutex>
+#include <sstream>
 #include <string>
 
 class Logger {
@@ -12,7 +13,19 @@ public:
         return instance;
     }
 
-    void Log(const std::string &message) { fprintf(file_, "%s\n", message.c_str()); }
+    void Log(const std::string &message) {
+        auto now   = std::chrono::system_clock::now();
+        auto us = duration_cast<std::chrono::microseconds>(now - std::chrono::floor<std::chrono::seconds>(now)).count();
+
+        std::time_t tt = std::chrono::system_clock::to_time_t(now);
+
+        std::stringstream stream;
+        stream << std::put_time(std::gmtime(&tt), "%Y-%m-%d %H:%M:%S")
+            << "." << std::setw(6) << std::setfill('0') << us
+            << ": " << message;
+
+        fprintf(stdout, "%s\n", stream.str().c_str());
+    }
 
     Logger(const Logger &) = delete;
     Logger &operator=(const Logger &) = delete;

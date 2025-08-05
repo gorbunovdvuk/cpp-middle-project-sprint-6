@@ -1,5 +1,7 @@
 set(target dispatcher_test)
 
+find_package(GTest REQUIRED)
+
 add_executable(${target}
     task_dispatcher.cpp
 )

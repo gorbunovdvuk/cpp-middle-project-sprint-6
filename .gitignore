@@ -1,3 +1,4 @@
 *.cache/
 CMakeUserPresets.json
+.idea/
 *build/

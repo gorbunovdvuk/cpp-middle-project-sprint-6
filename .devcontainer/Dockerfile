@@ -18,5 +18,14 @@ USER dev
 
 RUN git config --global core.editor code
 
+# Install conan through pipx
+RUN pipx install conan
+RUN pipx ensurepath
+
+# Copy conan profile
+COPY default /home/dev/.conan2/profiles/default
+RUN sudo chown -R dev:dev /home/dev/.conan2
+RUN sudo chmod 666 /home/dev/.conan2/profiles/default
+
 # Set the default command
 CMD ["/bin/bash"]
