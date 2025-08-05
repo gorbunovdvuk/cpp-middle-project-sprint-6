@@ -21,7 +21,9 @@ public:
     void shutdown();
 
 private:
-    std::map<TaskPriority, std::shared_ptr<IQueue>> queues_;
+    static std::map<TaskPriority, std::shared_ptr<IQueue>> prepare_queues(const std::map<TaskPriority, QueueOptions>& queues);
+
+    const std::map<TaskPriority, std::shared_ptr<IQueue>> queues_;
     mutable std::mutex mutex_;
     std::condition_variable not_empty_or_shutdown_;
 

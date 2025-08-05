@@ -7,23 +7,11 @@
 
 namespace dispatcher::queue {
 
-PriorityQueue::PriorityQueue(const std::map<TaskPriority, QueueOptions>& queues) {
-    for (const auto &[priority, options] : queues) {
-        if (options.bounded) {
-            queues_.emplace(priority, std::make_shared<BoundedQueue>(options.capacity.value()));
-        } else {
-            queues_.emplace(priority, std::make_shared<UnboundedQueue>());
-        }
-    }
+PriorityQueue::PriorityQueue(const std::map<TaskPriority, QueueOptions>& queues): queues_(prepare_queues(queues)) {
 }
 
 void PriorityQueue::push(TaskPriority priority, Task task) {
-    std::shared_ptr<IQueue> queue = std::invoke(
-        [this](TaskPriority priority) {
-            std::lock_guard lock(mutex_);
-            return queues_.at(priority);
-        },
-        priority);
+    std::shared_ptr<IQueue> queue = queues_.at(priority);
     queue->push(std::move(task));
     not_empty_or_shutdown_.notify_one();
 }
@@ -50,6 +38,18 @@ void PriorityQueue::shutdown() {
     std::unique_lock lock(mutex_);
     shutdown_ = true;
     not_empty_or_shutdown_.notify_all();
+}
+
+std::map<TaskPriority, std::shared_ptr<IQueue>> PriorityQueue::prepare_queues(const std::map<TaskPriority, QueueOptions>& queues) {
+    std::map<TaskPriority, std::shared_ptr<IQueue>> queues_;
+    for (const auto &[priority, options] : queues) {
+        if (options.bounded) {
+            queues_.emplace(priority, std::make_shared<BoundedQueue>(options.capacity.value()));
+        } else {
+            queues_.emplace(priority, std::make_shared<UnboundedQueue>());
+        }
+    }
+    return queues_;
 }
 
 } // namespace dispatcher::queue
